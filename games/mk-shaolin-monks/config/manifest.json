@@ -1,0 +1,50 @@
+{
+  "Game": "Mortal Kombat: Shaolin Monks",
+  "Elf": "MortalKombatShaolinMonks/SLUS_210.87",
+  "Sha256": "B1ED99D81B07969553ED2F9AFAAD4CAED1BBEB637D53A369F4DAFCA8EEDD2AB2",
+  "EntryPoint": "0x0011C070",
+  "FunctionDiscovery": "Native heuristic scanner; no ELF symbols or Ghidra map",
+  "FunctionsDiscovered": 8861,
+  "FunctionsRecompiled": 8711,
+  "Stubs": 150,
+  "Skipped": 0,
+  "DecodeFailures": 0,
+  "UnhandledInstructions": 0,
+  "Warnings": 2508,
+  "Dependencies": [
+    {
+      "Name": "elfio",
+      "Commit": "8ae6cec5d60495822ecd57d736f66149da9b1830"
+    },
+    {
+      "Name": "toml11",
+      "Commit": "be08ba2be2a964edcdb3d3e3ea8d100abc26f286"
+    },
+    {
+      "Name": "fmt",
+      "Commit": "407c905e45ad75fc29bf0f9bb7c5c2fd3475976f"
+    },
+    {
+      "Name": "libdwarf",
+      "Commit": "2e088b983562860f497b4fd789a3e61524eb857c"
+    },
+    {
+      "Name": "rabbitizer",
+      "Commit": "d5804fa488474830a47fbf9f3693048ec1e45589"
+    },
+    {
+      "Name": "nlohmann_json",
+      "Commit": "9cca280a4d0ccf0c08f47a99aa71d1b0e52f8d03"
+    },
+    {
+      "Name": "raylib",
+      "Commit": "c1ab645ca298a2801097931d1079b10ff7eb9df8"
+    }
+  ],
+  "ElfCrc32": "0x1A37A67C",
+  "NativeBuild": "out/mk-runtime/ps2xRuntime/Release/ps2EntryRunner.exe",
+  "Status": "Menus and opening movie reach scene drawing. Bloom/geometry corrupted; Goro's Lair introduction and gameplay unverified.",
+  "SupplementalFunctions": 847,
+  "Workflow": "games/mk-shaolin-monks/docs/WORKFLOW.md",
+  "HistoricalAnalyzerMetrics": true
+}

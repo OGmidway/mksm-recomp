@@ -1,0 +1,11 @@
+[general]
+input = "MortalKombatShaolinMonks/SLUS_210.87"
+ghidra_output = "games/mk-shaolin-monks/config/kernel-functions.csv"
+output = "games/mk-shaolin-monks/runtime/kernel-output/"
+single_file_output = false
+low_memory_mode = true
+patch_syscalls = false
+patch_cop0 = true
+patch_cache = true
+stubs = []
+skip = []

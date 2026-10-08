@@ -1,0 +1,389 @@
+{
+  "schema_version": 1,
+  "elf_sha256": {
+    "prototype": "f0f0234bec88bd0d68912b92d86d75d7e6dc14a877bbb7b0c69843517a653f64",
+    "retail": "b1ed99d81b07969553ed2f9afaad4caed1bbeb637d53a369f4dafca8eedd2ab2"
+  },
+  "scope": "Reviewed debug-menu, memory-manager and file-I/O subsets; map offsets are NOT globally applicable",
+  "validation": "Full paired disassembly, local map boundary alignment, map call/global cross-references. Duplicate async bodies resolved using anchored neighboring HD routine, source order and common callees. See ghidra/*-debug-features.txt.",
+  "important_differences": {
+    "player_stride": {
+      "prototype": 13184,
+      "retail": 13248
+    },
+    "god_mode_text_ids": {
+      "prototype": [
+        1291,
+        1292
+      ],
+      "retail": [
+        1638,
+        1639
+      ]
+    }
+  },
+  "excluded": [
+    "SelectDebugMenu: two short-pattern hits are insufficient; 0x1aa59c is inside SelectFreeCam.",
+    "All other unreviewed map names."
+  ],
+  "symbols": [
+    {
+      "name": "SelectFreeCam",
+      "original_name": "SelectFreeCam(sITEM *)",
+      "kind": "function",
+      "map_address": 1658952,
+      "prototype": 1658944,
+      "retail": 1746264,
+      "size": 96,
+      "prototype_body_sha256": "bded01c1b374c6456359f9cbfd10adca199d05a80aab2d0d406fd8c375821b44",
+      "retail_body_sha256": "6893a5029279135d43516c374565bcca13198e5818bb2b6d90957c4fb45125f0"
+    },
+    {
+      "name": "SelectFreezeCam",
+      "original_name": "SelectFreezeCam(sITEM *)",
+      "kind": "function",
+      "map_address": 1659048,
+      "prototype": 1659040,
+      "retail": 1746360,
+      "size": 116,
+      "prototype_body_sha256": "d74496383a0cd41d3da7ffe280e8517db91c5899a2f5924ba28c9251032e2ca8",
+      "retail_body_sha256": "a9045677bd2d236b43de7d3e9c2b8837d3aedddc5651a24196d0f0e8d89f947c"
+    },
+    {
+      "name": "GodModeToggle",
+      "original_name": "GodModeToggle(sITEM *)",
+      "kind": "function",
+      "map_address": 1660032,
+      "prototype": 1660024,
+      "retail": 1747672,
+      "size": 104,
+      "prototype_body_sha256": "2360f061a4a605966dd81472b86dce08a7400f5362692a538b744dcf2766fb7d",
+      "retail_body_sha256": "fbc782da6e8563f19e7121a017aa75ad7346e67ac409648e41bafdd9be82a5e8"
+    },
+    {
+      "name": "SetGodModeText",
+      "original_name": "SetGodModeText(sMENUBOX *)",
+      "kind": "function",
+      "map_address": 1660856,
+      "prototype": 1660848,
+      "retail": 1748496,
+      "size": 108,
+      "prototype_body_sha256": "33ad61f539da8597c734a5189f835d242f7375088091a0e55edaed8b1f1c9eb3",
+      "retail_body_sha256": "98050bc907727c11008e584508f9ad2fc0f4429eb680719d2e8830e4741395c3"
+    },
+    {
+      "name": "DebugMenuSetup",
+      "original_name": "DebugMenuSetup(sITEM *)",
+      "kind": "function",
+      "map_address": 1660968,
+      "prototype": 1660960,
+      "retail": 1748608,
+      "size": 292,
+      "prototype_body_sha256": "1b3396951a51b19b15b630d01a9ae6f33348bd51b45f28f0fea3c9a9f70ffac5",
+      "retail_body_sha256": "c9aa64da7908dbb3167cf021f74b7f4aed665ea9fda1bd8c52b71f6698ce3787"
+    },
+    {
+      "name": "DebugMenuUpdate",
+      "original_name": "DebugMenuUpdate(sITEM *, int)",
+      "kind": "function",
+      "map_address": 1654832,
+      "prototype": 1654824,
+      "retail": 1738968,
+      "size": 392,
+      "prototype_body_sha256": "18e5e354f52cd4453e792b276455b106c273d25798666837d96da5a5a8e70689",
+      "retail_body_sha256": "08f1e485c7ccf53ce29384ecc9e1b0a6461610e79fe65bb157d790609b22e64c"
+    },
+    {
+      "name": "Memory_Initialise",
+      "original_name": "Memory_Initialise(char *, char *)",
+      "kind": "function",
+      "map_address": 2045192,
+      "prototype": 2044768,
+      "retail": 2157776,
+      "size": 344,
+      "prototype_body_sha256": "e2efa32432a2e7f6d460ea89c26e84418a02510fed50ad430a957225d3ded59b",
+      "retail_body_sha256": "d79b7cf6116262b77f0724cb180372f081c319608577cc17e102b9541cc9a63b"
+    },
+    {
+      "name": "Memory_ResetBlock",
+      "original_name": "Memory_ResetBlock(int, RESET_TYPE_ENUM)",
+      "kind": "function",
+      "map_address": 2045536,
+      "prototype": 2045112,
+      "retail": 2158120,
+      "size": 560,
+      "prototype_body_sha256": "918a7ceea2badcdf7dc019646bcfedc88381438b0906d681516a8a0b4b8cf73e",
+      "retail_body_sha256": "0fbe13857e3ef40bcef28b522d132238b156c751ce24d79e6a2973c1d29dce7c"
+    },
+    {
+      "name": "Memory_AllocBlock",
+      "original_name": "Memory_AllocBlock(int, int, ALLOC_MODE_ENUM, char *, char *, int)",
+      "kind": "function",
+      "map_address": 2046096,
+      "prototype": 2045672,
+      "retail": 2158680,
+      "size": 728,
+      "prototype_body_sha256": "c6b9fcb74b7a998b03fa8c39801968274346a9121bdcb41b5ac9fef6d840b7bd",
+      "retail_body_sha256": "a3f07745a4c91a450463c072f5f73a76bf3ba493b0b940ab3e67501a8473d626"
+    },
+    {
+      "name": "Memory_StatsString",
+      "original_name": "Memory_StatsString(int, char *)",
+      "kind": "function",
+      "map_address": 2047288,
+      "prototype": 2046864,
+      "retail": 2159896,
+      "size": 564,
+      "prototype_body_sha256": "0bc1ff12fa98b2917f725f99e47b5d794e73de0836c3bbc064a56769b3c4e6fc",
+      "retail_body_sha256": "45c3c271231b438d20d1fbb8f8218f7d5fe30de0571f4db78b2485af9ba62fc9"
+    },
+    {
+      "name": "Memory_InitMallocBlockInfo",
+      "original_name": "Memory_InitMallocBlockInfo(ALLOC_DEF *)",
+      "kind": "function",
+      "map_address": 2052712,
+      "prototype": 2052288,
+      "retail": 2165320,
+      "size": 168,
+      "prototype_body_sha256": "87d6adcc3e1b59dfbd884dec3cb190b7de0797ea8c8193d40ffc6e6ab62f3a20",
+      "retail_body_sha256": "87d6adcc3e1b59dfbd884dec3cb190b7de0797ea8c8193d40ffc6e6ab62f3a20"
+    },
+    {
+      "name": "Memory_SetBlock",
+      "original_name": "Memory_SetBlock(int, char *, int, ALIGN_SIZE_ENUM, char *, RESET_SET_ENUM, ALLOC_TYPE_ENUM, ALLOC_LOCK_ENUM)",
+      "kind": "function",
+      "map_address": 2052936,
+      "prototype": 2052512,
+      "retail": 2165544,
+      "size": 568,
+      "prototype_body_sha256": "a63316cd563c440ab100051f59a9125d6f8ffd1e817a18907cddcdedd630b345",
+      "retail_body_sha256": "71ad9c16d5de853fbf0918efe4fb791c34d04254e7fe32e47290c75c4482cede"
+    },
+    {
+      "name": "Memory_Available",
+      "original_name": "Memory_Available(int)",
+      "kind": "function",
+      "map_address": 2053576,
+      "prototype": 2053152,
+      "retail": 2166184,
+      "size": 120,
+      "prototype_body_sha256": "3c42822e9ab806bbb4f85a231341c3198734a4940f966d88b5dcd50a3a23b421",
+      "retail_body_sha256": "5286816f8be4b13d5072cdef3f63999d3f12e1b9a1b230598d589dbd560e6cd6"
+    },
+    {
+      "name": "Memory_Used",
+      "original_name": "Memory_Used(int)",
+      "kind": "function",
+      "map_address": 2053696,
+      "prototype": 2053272,
+      "retail": 2166304,
+      "size": 168,
+      "prototype_body_sha256": "b8d74931751bd6c514ae6b5675e1740a9c23e609b2c00c0fa74a94329f7e394b",
+      "retail_body_sha256": "394724ebc601e79aadb8a97c05e8d9d180347a80fd689d8df3a3c26f50e538f5"
+    },
+    {
+      "name": "StartAsyncHDLoad",
+      "original_name": "StartAsyncHDLoad(char *)",
+      "kind": "function",
+      "map_address": 2057216,
+      "prototype": 2056792,
+      "retail": 2171456,
+      "size": 132,
+      "prototype_body_sha256": "15d617a2b52b92125a3c9717323d4a56e6ea2562559b7de1a90d919ab2b028fd",
+      "retail_body_sha256": "405ae5f80f66a720fbadd1e3afdaddd2ecafecd5085f3c3bd6a6209a8e480339"
+    },
+    {
+      "name": "AdjustLoadInfo",
+      "original_name": "AdjustLoadInfo(int, int)",
+      "kind": "function",
+      "map_address": 2057400,
+      "prototype": 2056976,
+      "retail": 2171776,
+      "size": 32,
+      "prototype_body_sha256": "edeab1c2eced685ec0f487276b0a5cbd1bd3a37686ead643ee2ececc8ff947c0",
+      "retail_body_sha256": "2a81bfde767f1faf9b6b0954e03e70866bfcfbcf3e7ea93dc3ab09c360bde205"
+    },
+    {
+      "name": "StartAsyncLoadFile",
+      "original_name": "StartAsyncLoadFile(char *)",
+      "kind": "function",
+      "map_address": 2057432,
+      "prototype": 2057008,
+      "retail": 2171808,
+      "size": 28,
+      "prototype_body_sha256": "5c0a1d5b28ffe169ec78ec4d360a51297bc7a3fddcb2626cc3d5299afa050996",
+      "retail_body_sha256": "7f75d31f10e755d4ab7728599c740856e981a3b41f0c6e750b853437db8321a4"
+    },
+    {
+      "name": "AsyncLoadStatus",
+      "original_name": "AsyncLoadStatus(void)",
+      "kind": "function",
+      "map_address": 2057472,
+      "prototype": 2057048,
+      "retail": 2171848,
+      "size": 232,
+      "prototype_body_sha256": "125a197fa3047feed97ddee2c6d556fbbf19c41f0c5de2e0eaaa96b8b4ba0b8c",
+      "retail_body_sha256": "8d10255f332b895d95cba4581f6ca2f26f1d3bd3ed459cbe8a0809ce8dab39f9"
+    },
+    {
+      "name": "AsyncProcessLoad",
+      "original_name": "AsyncProcessLoad(void)",
+      "kind": "function",
+      "map_address": 2056912,
+      "prototype": 2056488,
+      "retail": 2171152,
+      "size": 232,
+      "prototype_body_sha256": "125a197fa3047feed97ddee2c6d556fbbf19c41f0c5de2e0eaaa96b8b4ba0b8c",
+      "retail_body_sha256": "8d10255f332b895d95cba4581f6ca2f26f1d3bd3ed459cbe8a0809ce8dab39f9"
+    },
+    {
+      "name": "cPxFileInterface_StartFileLoading",
+      "original_name": "cPxFileInterface::StartFileLoading(int, int, char *)",
+      "kind": "function",
+      "map_address": 3449144,
+      "prototype": 3448720,
+      "retail": 3607152,
+      "size": 40,
+      "prototype_body_sha256": "f6e906ae7e19cae32a5bcfba3d3eaf0ad20c768f94df7be432f68f127d606fcf",
+      "retail_body_sha256": "c9694333efb4e9fabe198ca03938ca3dd1a8f5809ce7cabbc1b6f7eaca892f45"
+    },
+    {
+      "name": "cPxFileInterface_FileLoadStatus",
+      "original_name": "cPxFileInterface::FileLoadStatus(void)",
+      "kind": "function",
+      "map_address": 3449184,
+      "prototype": 3448760,
+      "retail": 3607192,
+      "size": 40,
+      "prototype_body_sha256": "c86151f995482b56609052de334b401ef2787c4eb38c8a458a41cb41586c80f5",
+      "retail_body_sha256": "84c9609747d53604b65e3ff78eff7e8dff62303cc7ce8d41ba9743a0aeeb4986"
+    },
+    {
+      "name": "cPxFileInterface_CloseFileHandle",
+      "original_name": "cPxFileInterface::CloseFileHandle(void)",
+      "kind": "function",
+      "map_address": 3449264,
+      "prototype": 3448840,
+      "retail": 3607272,
+      "size": 40,
+      "prototype_body_sha256": "c778a21d6de28a0be3a492b417cd43fffa273f2b2163ba6266303079bc45b45d",
+      "retail_body_sha256": "cacc391d2a32846a97a0507d72ae5816664b59eae791018db05e7aaa1bcbd105"
+    },
+    {
+      "name": "Async_DataLoad",
+      "kind": "function",
+      "map_address": 3479800,
+      "prototype": 3479376,
+      "retail": 3639856,
+      "size": 1024,
+      "prototype_size": 1156,
+      "prototype_body_sha256": "9424451d0eff7bc6e800ba1bcd2f386b03c6416426f6ccdc23da4e32aa4761bb",
+      "retail_body_sha256": "8b580fb1f097d00120365e41866ffc67643e72e3942655cf6d65c7735c32cd72",
+      "validation": "Semantic call-graph and complete decompilation review; not instruction-equivalent",
+      "differences": "Same five-state loader and call graph. Retail adds compressed-size planning and 52-byte requests; prototype uses 48-byte requests and gzip inspection."
+    },
+    {
+      "name": "GetAsyncFileSize",
+      "kind": "function",
+      "map_address": 2055880,
+      "prototype": 2055456,
+      "retail": 2168952,
+      "size": 704,
+      "prototype_size": 332,
+      "prototype_body_sha256": "a82f3cf33e9e0a27794f0a9681a1980ce3da850783fedebf51363ae246999f04",
+      "retail_body_sha256": "051a24c002bf66c7841e4009b4177099a99c5503c3e8509901095e79fc5126f8",
+      "validation": "Semantic call-graph and complete decompilation review; not instruction-equivalent",
+      "differences": "Retail adds packed 64-bit WAD metadata, file-ID base 30 and an output-size pointer; prototype uses plain offset/size pairs and file-ID base 20."
+    },
+    {
+      "name": "gGodMode",
+      "kind": "global",
+      "prototype": 4863336,
+      "retail": 5011320
+    },
+    {
+      "name": "G_Free_Camera",
+      "kind": "global",
+      "prototype": 5145560,
+      "retail": 5313400
+    },
+    {
+      "name": "gObjectNum",
+      "kind": "global",
+      "prototype": 5124580,
+      "retail": 5292340
+    },
+    {
+      "name": "gMenuSystem",
+      "kind": "global",
+      "prototype": 5959408,
+      "retail": 6102496
+    },
+    {
+      "name": "SelectWindowId",
+      "kind": "global",
+      "prototype": 5961456,
+      "retail": 6104868
+    },
+    {
+      "name": "ActiveWindowId",
+      "kind": "global",
+      "prototype": 5961460,
+      "retail": 6104872
+    },
+    {
+      "name": "DebugMenuWin",
+      "kind": "global",
+      "prototype": 4862552,
+      "retail": 5010336
+    },
+    {
+      "name": "gTest_no_particle_update",
+      "kind": "global",
+      "prototype": 7535680,
+      "retail": 7073296
+    },
+    {
+      "name": "alloc_blocks",
+      "kind": "global",
+      "prototype": 6456280,
+      "retail": 6613400
+    },
+    {
+      "name": "alloc_block_f",
+      "kind": "global",
+      "prototype": 6469592,
+      "retail": 6626712
+    },
+    {
+      "name": "gMemoryErrorIgnore_f",
+      "kind": "global",
+      "prototype": 5011840,
+      "retail": 5174320
+    },
+    {
+      "name": "async_load_info",
+      "kind": "global",
+      "prototype": 5012776,
+      "retail": 5175264
+    },
+    {
+      "name": "file_info",
+      "kind": "global",
+      "prototype": 6469744,
+      "retail": 6626864
+    },
+    {
+      "name": "gPxFileInterface",
+      "kind": "global",
+      "prototype": 8143880,
+      "retail": 7681752
+    },
+    {
+      "name": "async_info",
+      "kind": "global",
+      "prototype": 8153064,
+      "retail": 7690936
+    }
+  ]
+}

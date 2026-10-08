@@ -1,0 +1,441 @@
+[
+  {
+    "name": "Memory_Initialise(char *, char *)",
+    "map": 2045192,
+    "prototype": 2044768,
+    "size": 344,
+    "retail_candidates": [
+      2157776
+    ]
+  },
+  {
+    "name": "Memory_ResetBlock(int, RESET_TYPE_ENUM)",
+    "map": 2045536,
+    "prototype": 2045112,
+    "size": 560,
+    "retail_candidates": [
+      2158120
+    ]
+  },
+  {
+    "name": "Memory_Used(int)",
+    "map": 2053696,
+    "prototype": 2053272,
+    "size": 168,
+    "retail_candidates": [
+      2166304
+    ]
+  },
+  {
+    "name": "FastMemset(void *, long, int)",
+    "map": 2047856,
+    "prototype": 2047432,
+    "size": 1680,
+    "retail_candidates": [
+      2160464
+    ]
+  },
+  {
+    "name": "Memory_AllocBlock(int, int, ALLOC_MODE_ENUM, char *, char *, int)",
+    "map": 2046096,
+    "prototype": 2045672,
+    "size": 728,
+    "retail_candidates": [
+      2158680
+    ]
+  },
+  {
+    "name": "Memory_FreeBlock(int, int, char *, char *, int)",
+    "map": 2046824,
+    "prototype": 2046400,
+    "size": 464,
+    "retail_candidates": []
+  },
+  {
+    "name": "Memory_StatsString(int, char *)",
+    "map": 2047288,
+    "prototype": 2046864,
+    "size": 564,
+    "retail_candidates": [
+      2159896
+    ]
+  },
+  {
+    "name": "FastMemcpy(void *, const void *, int)",
+    "map": 2049536,
+    "prototype": 2049112,
+    "size": 752,
+    "retail_candidates": [
+      2162144
+    ]
+  },
+  {
+    "name": "FastMemcmp(const void *, const void *, int)",
+    "map": 2050288,
+    "prototype": 2049864,
+    "size": 2192,
+    "retail_candidates": [
+      2162896
+    ]
+  },
+  {
+    "name": "GetAllocName(int)",
+    "map": 2052480,
+    "prototype": 2052056,
+    "size": 28,
+    "retail_candidates": [
+      2060616,
+      2165088
+    ]
+  },
+  {
+    "name": "GetAllocLowPtr(int)",
+    "map": 2052512,
+    "prototype": 2052088,
+    "size": 32,
+    "retail_candidates": [
+      2060456,
+      2060520,
+      2060552,
+      2060584,
+      2165120,
+      2165152,
+      2811272,
+      3614536,
+      3614568,
+      3614600,
+      3614632,
+      3614664,
+      3614696
+    ]
+  },
+  {
+    "name": "GetAllocHighPtr(int)",
+    "map": 2052544,
+    "prototype": 2052120,
+    "size": 32,
+    "retail_candidates": [
+      2060456,
+      2060520,
+      2060552,
+      2060584,
+      2165120,
+      2165152,
+      2811272,
+      3614536,
+      3614568,
+      3614600,
+      3614632,
+      3614664,
+      3614696
+    ]
+  },
+  {
+    "name": "Memory_AssignBlock(void)",
+    "map": 2052576,
+    "prototype": 2052152,
+    "size": 96,
+    "retail_candidates": [
+      2165184
+    ]
+  },
+  {
+    "name": "Memory_UnAssignBlock(int *)",
+    "map": 2052672,
+    "prototype": 2052248,
+    "size": 36,
+    "retail_candidates": [
+      2165280
+    ]
+  },
+  {
+    "name": "Memory_InitMallocBlockInfo(ALLOC_DEF *)",
+    "map": 2052712,
+    "prototype": 2052288,
+    "size": 168,
+    "retail_candidates": [
+      2165320
+    ]
+  },
+  {
+    "name": "Memory_GetBlockName(int)",
+    "map": 2052880,
+    "prototype": 2052456,
+    "size": 52,
+    "retail_candidates": [
+      2165488
+    ]
+  },
+  {
+    "name": "Memory_SetBlock(int, char *, int, ALIGN_SIZE_ENUM, char *, RESET_SET_ENUM, ALLOC_TYPE_ENUM, ALLOC_LOCK_ENUM)",
+    "map": 2052936,
+    "prototype": 2052512,
+    "size": 568,
+    "retail_candidates": [
+      2165544
+    ]
+  },
+  {
+    "name": "Memory_CurrentBlock(int)",
+    "map": 2053904,
+    "prototype": 2053480,
+    "size": 60,
+    "retail_candidates": [
+      2166512
+    ]
+  },
+  {
+    "name": "Memory_Available(int)",
+    "map": 2053576,
+    "prototype": 2053152,
+    "size": 120,
+    "retail_candidates": [
+      2166184
+    ]
+  },
+  {
+    "name": "Memory_ResetAllBlocks(void)",
+    "map": 2053504,
+    "prototype": 2053080,
+    "size": 68,
+    "retail_candidates": [
+      2166112
+    ]
+  },
+  {
+    "name": "Memory_BlockLength(int)",
+    "map": 2053864,
+    "prototype": 2053440,
+    "size": 36,
+    "retail_candidates": [
+      2166472
+    ]
+  },
+  {
+    "name": "Memory_CleanUpFragments(ALLOC_DEF *)",
+    "map": 2053968,
+    "prototype": 2053544,
+    "size": 168,
+    "retail_candidates": [
+      2166576
+    ]
+  },
+  {
+    "name": "Memory_StorePosition(int)",
+    "map": 2054136,
+    "prototype": 2053712,
+    "size": 44,
+    "retail_candidates": [
+      2166744,
+      2166792
+    ]
+  },
+  {
+    "name": "Memory_ResetPosition(int)",
+    "map": 2054184,
+    "prototype": 2053760,
+    "size": 44,
+    "retail_candidates": [
+      2166744,
+      2166792
+    ]
+  },
+  {
+    "name": "Memory_ValidatePointer(int, char *)",
+    "map": 2054232,
+    "prototype": 2053808,
+    "size": 104,
+    "retail_candidates": [
+      2166840
+    ]
+  },
+  {
+    "name": "PxNewFunction(unsigned int, MEM_BLOCKS)",
+    "map": 2054360,
+    "prototype": 2053936,
+    "size": 68,
+    "retail_candidates": [
+      2167040
+    ]
+  },
+  {
+    "name": "Init_WAD_Table(void)",
+    "map": 2054432,
+    "prototype": 2054008,
+    "size": 184,
+    "retail_candidates": []
+  },
+  {
+    "name": "BlockedLoadFile(int, char *)",
+    "map": 2057704,
+    "prototype": 2057280,
+    "size": 372,
+    "retail_candidates": []
+  },
+  {
+    "name": "GetCDFileSize(int)",
+    "map": 2054616,
+    "prototype": 2054192,
+    "size": 556,
+    "retail_candidates": []
+  },
+  {
+    "name": "GetHDFileSize(int)",
+    "map": 2055176,
+    "prototype": 2054752,
+    "size": 704,
+    "retail_candidates": []
+  },
+  {
+    "name": "GetAsyncFileSize(int)",
+    "map": 2055880,
+    "prototype": 2055456,
+    "size": 332,
+    "retail_candidates": []
+  },
+  {
+    "name": "CD_Initialise(int)",
+    "map": 2056216,
+    "prototype": 2055792,
+    "size": 60,
+    "retail_candidates": [
+      2170336
+    ]
+  },
+  {
+    "name": "NewCreateFileName(char *, int)",
+    "map": 2056280,
+    "prototype": 2055856,
+    "size": 56,
+    "retail_candidates": []
+  },
+  {
+    "name": "NewCreateAbsoluteFileName(char *, int)",
+    "map": 2056336,
+    "prototype": 2055912,
+    "size": 112,
+    "retail_candidates": []
+  },
+  {
+    "name": "CreateFileName(char *, int, int)",
+    "map": 2056448,
+    "prototype": 2056024,
+    "size": 340,
+    "retail_candidates": []
+  },
+  {
+    "name": "GetWadFileSize(int)",
+    "map": 2056792,
+    "prototype": 2056368,
+    "size": 48,
+    "retail_candidates": []
+  },
+  {
+    "name": "AdjustCDLoadInfo(int, int)",
+    "map": 2056840,
+    "prototype": 2056416,
+    "size": 32,
+    "retail_candidates": [
+      2171080,
+      2171776
+    ]
+  },
+  {
+    "name": "StartAsyncCDLoad(char *)",
+    "map": 2056872,
+    "prototype": 2056448,
+    "size": 28,
+    "retail_candidates": [
+      2171112,
+      2171808
+    ]
+  },
+  {
+    "name": "AsyncProcessLoad(void)",
+    "map": 2056912,
+    "prototype": 2056488,
+    "size": 232,
+    "retail_candidates": [
+      2171152,
+      2171848
+    ]
+  },
+  {
+    "name": "AdjustHDLoadInfo(int, int)",
+    "map": 2057144,
+    "prototype": 2056720,
+    "size": 72,
+    "retail_candidates": [
+      2171384
+    ]
+  },
+  {
+    "name": "StartAsyncHDLoad(char *)",
+    "map": 2057216,
+    "prototype": 2056792,
+    "size": 132,
+    "retail_candidates": [
+      2171456
+    ]
+  },
+  {
+    "name": "GetAsyncFileOffset(void)",
+    "map": 2057352,
+    "prototype": 2056928,
+    "size": 44,
+    "retail_candidates": [
+      2171728
+    ]
+  },
+  {
+    "name": "AdjustLoadInfo(int, int)",
+    "map": 2057400,
+    "prototype": 2056976,
+    "size": 32,
+    "retail_candidates": [
+      2171080,
+      2171776
+    ]
+  },
+  {
+    "name": "StartAsyncLoadFile(char *)",
+    "map": 2057432,
+    "prototype": 2057008,
+    "size": 28,
+    "retail_candidates": [
+      2171112,
+      2171808
+    ]
+  },
+  {
+    "name": "AsyncLoadStatus(void)",
+    "map": 2057472,
+    "prototype": 2057048,
+    "size": 232,
+    "retail_candidates": [
+      2171152,
+      2171848
+    ]
+  },
+  {
+    "name": "GetWadFileInformation(char *, int, char **, int *)",
+    "map": 2058096,
+    "prototype": 2057672,
+    "size": 52,
+    "retail_candidates": []
+  },
+  {
+    "name": "BackupWadFileHeader(char *)",
+    "map": 2058152,
+    "prototype": 2057728,
+    "size": 136,
+    "retail_candidates": []
+  },
+  {
+    "name": "DumpWadFileHeader(void)",
+    "map": 2058288,
+    "prototype": 2057864,
+    "size": 88,
+    "retail_candidates": []
+  }
+]

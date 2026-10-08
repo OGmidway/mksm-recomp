@@ -1,0 +1,25 @@
+name: Source checks
+on: [push, pull_request, workflow_dispatch]
+permissions:
+  contents: read
+jobs:
+  source:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Audit public source and parse Python, JSON and TOML
+        run: python tools/audit-publication.py
+      - name: Configure game-data-free runtime checks
+        run: cmake -S . -B out/checks -DPS2X_BUILD_RECOMP=OFF -DPS2X_BUILD_ANALYZER=OFF -DPS2X_BUILD_STUDIO=OFF -DPS2X_BUILD_TEST=OFF -DPS2X_ENABLE_DEBUG_UI=OFF -DPS2X_ENABLE_FFMPEG=OFF -DPS2X_BUILD_MKSM_DEBUG_CHECK=ON
+      - name: Build focused runtime checks
+        run: cmake --build out/checks --config Release --target ps2_vif_image_check ps2_vu_sub_check ps2_vu_sdk_check --parallel 2
+      - name: Run focused checks
+        shell: pwsh
+        run: |
+          foreach ($test in @('ps2_vif_image_check', 'ps2_vu_sub_check', 'ps2_vu_sdk_check')) {
+            & "out/checks/ps2xRuntime/Release/$test.exe"
+            if ($LASTEXITCODE -ne 0) { throw "$test failed" }
+          }
