@@ -129,3 +129,21 @@ Latest rendering checkpoint: session 95742f6cffa04237987d9b16d9273b2a, runner 4a
 Texture feedback is the next focused investigation: CPU SampleTexture reads live VRAM; TextureFlush is currently a no-op. [PCSX2 GSState HandleAutoFlush](https://github.com/PCSX2/pcsx2/blob/master/pcsx2/GS/GSState.cpp) describes page-buffered texture reads retaining old pixels during writes. [PCSX2 GameIndex](https://github.com/PCSX2/pcsx2/blob/master/bin/resources/GameIndex.yaml) sets SLUS-21087 autoFlush=2 specifically for bloom intensity. Do not blindly snapshot each primitive or suppress bloom: identify page/TEXFLUSH boundaries and validate with Python plus a native feedback regression. Prototype-map candidate post-processing matches are retained separately in ghidra/bloom-candidates.json; these are not verified symbol imports.
 
 Longer input checkpoint: session 627d7ba5e6fa4c75af7067dcbf4f0a69, runner d888c5ffb932df7b28c77b5562b7a5a9d7f729e728a6b3dd77b6c2c67ff3b83d, 240 seconds, 627 fresh samples. Both later stick pulses reached guest reads and camera coordinates changed, including motion after neutral. The final image shows a HUD and heavily corrupted scene. Without actor-position or visible controlled-motion evidence this does not verify gameplay. Its bounded stick samples are retained in logs/movement-probe.json. No runner or build remains active after these checks.
+
+
+## 2026-10-09: Feedback baseline and limits
+
+Revalidated captured session a49cb286f53f4452bb2c0c2d73cadae1 against all three file hashes and runner fc3a4c89e50385a1416118b689a68bdbadbdbc349b8195b50c47354cfbf42af7. Coherent Python replay matches all 1,048,576 VRAM words after 840 sprite draws and 855,296 writes. Page-cache, flush-snapshot and draw-snapshot hypotheses differ in 8,363 / 8,970 / 8,921 words respectively. Whole-VRAM white counts are 162,855 coherent versus 162,661 / 162,520 / 162,542: these are hypothesis comparisons, not proof of correct hardware behavior. No cache hypothesis is promoted to C++.
+
+Surface-specific check: framebuffer 0 already contains 48,195 exact-white pixels and framebuffer 70 contains 49,851 before this late feedback pass. Neither changes during the captured pass. Scratch framebuffer 140 rises from 11,857 to 14,278 exact-white pixels (640x224 region). All captured UV/XYZ endpoints are integral; fractional XYOFFSET values are present. The next investigation captures the earliest matching bloom pass rather than assuming this late pass explains initial saturation. Earlier frames may have contributed. Captures remain bounded and overwritten, with evidence summarized here.
+
+
+### Earliest first-stage feedback pass, same runtime
+
+Fresh 145-second muted run, session 531c17d0c46f40f8acd18175584b5204, same runner fc3a4c89e50385a1416118b689a68bdbadbdbc349b8195b50c47354cfbf42af7: 417 fresh inspector samples, no reported runtime errors or XGKICK failures. Used the documented diagnostic intro skip and timed inputs; this is not natural opening-movie or gameplay validation. The earliest matching pass was flush 37442. Local framebuffer inspection confirms cave geometry, not a menu or Loading screen.
+
+Before this pass, exact-white counts on framebuffer 0, 70 and scratch 140 were all zero. Coherent Python replay again matches every native VRAM word; after the pass scratch 140 has 588 exact-white pixels. Page-cache and flush-snapshot hypotheses yield 527 and 515, with 3,455 and 4,009 mismatched words respectively. These differences do not establish hardware-correct behavior. No speculative C++ cache fix was applied.
+
+The final live image remains heavily overexposed and geometrically incorrect; the original Goro's Lair sequence and actor control are unproven. Next: trace the post-bloom composite and framebuffer clearing across early scene frames, and investigate fractional XYOFFSET handling with a targeted raster reference. Distinguish intended bright-source bloom from erroneous accumulation before changing runtime behavior.
+
+Capture hashes: CSV b52d2184da9972eab665f2eb358825dcee5832e6542b2d11b4d90156c6c6e033; start 4e6ebdbde55857269ec03bc34cb5c20bd063ba9676bc5ca8362e00fe979f74a3; end 0bd7213436c85f6f05ec43f26f06a3095086f24523a22c2619e2c10dd378a877. Raw data remain local in the overwritten bounded capture.
