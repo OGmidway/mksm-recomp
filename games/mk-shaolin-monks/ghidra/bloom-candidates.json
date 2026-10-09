@@ -40,5 +40,47 @@
     "state_setup": "0x276f00 emits TEXFLUSH, ZBUF_2 (masked), TEST_2, SCISSOR_2, TEX1_2, COLCLAMP and CLAMP_2",
     "debug_values": "0x65a5c0/0x65a5c4 are consistent with prototype gg_off3/gg_off4 layout; static references found writes only; not established as packet memory",
     "limits": "Retail decompilation and live register observations; no speculative runtime rendering fix. Raw disassembly stays local."
+  },
+  "depth_packet_candidates": {
+    "date": "2026-10-09",
+    "method": "Map minus 0x1a8 candidates, full normalized instruction comparison, confirmed retail function starts and lengths in functions.csv; read-only retail decompilation reviewed. Relocation-sensitive immediates are masked; these are candidates, not imported verified symbols.",
+    "functions": [
+      {
+        "name": "SetPacketZBufferON_32bit",
+        "prototype_candidate": "0x20bd18",
+        "retail_candidate": "0x229ae0",
+        "normalized_matching_words": 166,
+        "total_words": 166
+      },
+      {
+        "name": "SetPacketZBufferIsArena",
+        "prototype_candidate": "0x20bfb0",
+        "retail_candidate": "0x229d78",
+        "normalized_matching_words": 166,
+        "total_words": 166
+      },
+      {
+        "name": "SetPacketZBufferIsZBuffer",
+        "prototype_candidate": "0x20c248",
+        "retail_candidate": "0x22a010",
+        "normalized_matching_words": 168,
+        "total_words": 168
+      },
+      {
+        "name": "ClearVRAM",
+        "prototype_candidate": "0x21e208",
+        "retail_candidate": "0x23c540",
+        "normalized_matching_words": 148,
+        "total_words": 148
+      },
+      {
+        "name": "CFullScreen::SetPacketCopyArenaDynamic2ZBuffer",
+        "prototype_candidate": "0x2561c0",
+        "retail_candidate": "0x2797f8",
+        "normalized_matching_words": 92,
+        "total_words": 92
+      }
+    ],
+    "active_clear_path": "Retail 0x3839e8 calls HLE sceGsPutDrawEnv at 0x383668 with a GIF-tag pointer. Retail setup/clear/swap overrides are already installed. The corrected HLE submits NLOOP+1 quadwords through GIF DMA; it previously misread the tag as a register and dropped clear commands."
   }
 }

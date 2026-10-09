@@ -1342,10 +1342,13 @@ bool PS2Memory::writeIORegister(uint32_t address, uint32_t value)
                 {
                     if (qwCount == 0)
                         return;
-                    const bool scratch = isScratchpad(srcAddr);
+                    // MADR bit 31 selects scratchpad for normal GIF/VIF DMA;
+                    // it is not an EE KSEG0 address. Preserve the source kind
+                    // when converting to the address used by the pending copy.
+                    const bool scratch = (srcAddr & 0x80000000u) != 0u || isScratchpad(srcAddr);
                     PendingTransfer pt;
                     pt.fromScratchpad = scratch;
-                    pt.srcAddr = srcAddr;
+                    pt.srcAddr = scratch ? (0x70000000u | (srcAddr & (PS2_SCRATCHPAD_SIZE - 1u))) : srcAddr;
                     pt.qwc = qwCount;
                     if (channelBase == 0x1000A000u)
                         m_pendingGifTransfers.push_back(pt);

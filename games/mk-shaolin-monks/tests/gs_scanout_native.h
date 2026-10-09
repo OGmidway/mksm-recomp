@@ -52,3 +52,32 @@ static bool checkGsFieldWeaving() {
  weave.reset();auto reset=field(70);expected=reset.pixels;
  weave.apply(reset,request);return reset.pixels==expected;
 }
+
+// The draw-environment pointer includes its GIF tag. Clear draws follow all
+// eight state registers and must reach the GS through the normal DMA path.
+static bool checkGsDrawEnvironmentClear() {
+ auto runtime=std::make_unique<PS2Runtime>();auto& mem=runtime->memory();
+ if(!mem.initialize() || !runtime->syncCoreSubsystems())return false;
+ GSCpuBackend access;access.Initialize(mem.getGSVRAM(),PS2_GS_VRAM_SIZE);
+ for(unsigned y=0;y<32;++y)for(unsigned x=0;x<64;++x){
+  access.WriteVram(GS_PSM_CT32,0,1,x,y,0x80ffffff);
+  access.WriteVram(GS_PSM_Z24,140*32,1,x,y,0xffffff);
+ }
+ const uint64_t packet[]={0x100000000000800eull,0xe,
+  1ull<<16,0x4c,140ull|(1ull<<24),0x4e,0,0x18,
+  (63ull<<16)|(31ull<<48),0x40,1,0x1a,1,0x46,0x50000,0x47,0,0x45,
+  0x30000,0x47,6,0,0x3f80000080402010ull,1,0,5,
+  (64ull<<4)|(32ull<<20),5,0x50000,0x47};
+ for(uint32_t address:{0x90000u,0x20090000u,0x70000100u}) {
+  if(address==0x70000100u){for(unsigned i=0;i<sizeof(packet)/8;++i)mem.write64(address+i*8,packet[i]);}
+  else std::memcpy(mem.getRDRAM()+0x90000,packet,sizeof(packet));
+  access.WriteVram(GS_PSM_CT32,0,1,12,10,0x80ffffff);
+  access.WriteVram(GS_PSM_Z24,140*32,1,12,10,0xffffff);
+  mem.writeIORegister(0x1000e000,1);
+  R5900Context c{};SET_GPR_U32(&c,4,address);
+  ps2_stubs::sceGsPutDrawEnv(mem.getRDRAM(),&c,runtime.get());mem.processPendingTransfers();runtime->gifArbiter().drain();
+  if(getRegU32(&c,2)!=0 || access.ReadVram(GS_PSM_CT32,0,1,12,10)!=0x80402010u ||
+     access.ReadVram(GS_PSM_Z24,140*32,1,12,10)!=0){std::cerr<<"draw-env address="<<std::hex<<address<<" color="<<access.ReadVram(GS_PSM_CT32,0,1,12,10)<<" depth="<<access.ReadVram(GS_PSM_Z24,140*32,1,12,10)<<std::dec<<"\n";return false;}
+ }
+ return true;
+}

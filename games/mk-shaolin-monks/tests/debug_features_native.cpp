@@ -97,6 +97,7 @@ int main(int argc,char** argv){
  std::cout<<"PASS: IOP sound uploads copy bytes before completion, bounds, n32 zero args, isolation and reset\n";
  if(!checkControllerProfiles()){std::cerr<<"FAIL controller profile mapping\n";return 1;}
  std::cout<<"PASS: controller profiles, independent ports, button remaps, trigger thresholds and Python stick fixtures\n";
+ if(!checkGsDrawEnvironmentClear()){std::cerr<<"FAIL complete draw environment color/depth clear\n";return 1;}
  if(!checkRetailMovieDisplay()){std::cerr<<"FAIL original retail movie display setup\n";return 1;}
  std::cout<<"PASS: original movie field mode, display dimensions, clear packets and framebuffer bounds\n";
  if(argc==2 && std::strcmp(argv[1],"--pcm-device")==0) {

@@ -124,7 +124,8 @@ def main():
     parser.add_argument('--audible',action='store_true',help='Opt into audible output; diagnostic tests are muted by default')
     parser.add_argument('--capture-pcm',action='store_true',help='Overwrite at most 2 MiB of submitted PCM for offline analysis')
     parser.add_argument('--capture-feedback',action='store_true',help='Capture one bounded sprite feedback pass and two 4 MiB VRAM snapshots for Python replay')
-    parser.add_argument('--capture-pixels',action='store_true',help='Capture at most 1024 successful writes at two fixed scene pixels')
+    parser.add_argument('--capture-pixels',action='store_true',help='Capture at most 8192 fragment outcomes at two fixed scene pixels')
+    parser.add_argument('--pixels-after-feedback',action='store_true',help='Begin pixel provenance at the first captured feedback pass; requires --capture-feedback and --capture-pixels')
     parser.add_argument('--pixel-delay-ms',type=int,default=120000,help='Start pixel provenance after 0..300000 ms')
     parser.add_argument('--capture-primitives',action='store_true',help='Capture at most 4096 raw draws with effective GS state for Python analysis')
     parser.add_argument('--primitive-delay-ms',type=int,default=10000,help='Start primitive capture after 0..300000 ms')
@@ -144,6 +145,7 @@ def main():
     if args.vu1_on_xgkick_failure and (not args.capture_vu1 or args.vu1_entry_pc is not None or args.vu1_distinct_entries or args.vu1_delay_ms): parser.error('failure capture requires --capture-vu1 without entry, delay or distinct filters')
     if args.vif_launch_pc is not None and (not 0<=args.vif_launch_pc<16384 or args.vif_launch_pc%8): parser.error('VIF launch PC must be aligned and below 0x4000')
     if args.self_test: return self_test()
+    if args.pixels_after_feedback and not (args.capture_feedback and args.capture_pixels): parser.error('--pixels-after-feedback requires both capture flags')
     if args.read:
         row=json.loads(args.read.read_text());report=compact(row)
         report['age_seconds']=round((time.time()*1000-row['captured_unix_ms'])/1000,2)
@@ -212,6 +214,8 @@ def main():
     if args.capture_feedback:
         for suffix in ('.csv','.start.bin','.end.bin','.stop.json'):(RUN/('feedback'+suffix)).unlink(missing_ok=True)
         env['PS2_INSPECTOR_FEEDBACK']=str(RUN/'feedback')
+    env.pop('PS2_INSPECTOR_PIXELS_AFTER_FEEDBACK',None)
+    if args.pixels_after_feedback: env['PS2_INSPECTOR_PIXELS_AFTER_FEEDBACK']='1'
     env.pop('PS2_INSPECTOR_PIXELS',None)
     env['PS2_INSPECTOR_PIXELS_DELAY_MS']=str(args.pixel_delay_ms)
     if args.capture_pixels:
@@ -351,7 +355,7 @@ def main():
     if args.capture_feedback:
         report['feedback_capture']={'session':token,'files':{suffix:hashlib.sha256((RUN/('feedback'+suffix)).read_bytes()).hexdigest() for suffix in ('.csv','.start.bin','.end.bin','.stop.json') if (RUN/('feedback'+suffix)).exists()}}
     if args.capture_pixels and (RUN/'pixels.csv').exists():
-        report['pixel_capture']={'path':str(RUN/'pixels.csv'),'session':token,'delay_ms':args.pixel_delay_ms,
+        report['pixel_capture']={'path':str(RUN/'pixels.csv'),'session':token,'delay_ms':args.pixel_delay_ms,'after_feedback':args.pixels_after_feedback,
                                 'sha256':hashlib.sha256((RUN/'pixels.csv').read_bytes()).hexdigest()}
     if args.capture_primitives and (RUN/'primitives.csv').exists():
         report['primitive_capture']={'path':str(RUN/'primitives.csv'),'session':token,'delay_ms':args.primitive_delay_ms,'triangles_only':args.triangles_only,

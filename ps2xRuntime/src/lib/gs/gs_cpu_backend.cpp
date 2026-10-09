@@ -973,8 +973,61 @@ void GSCpuBackend::WritePixel(const GSDrawState &state, int x, int y, int z, uin
         break;
     }
 
+    const bool diagnosticPixel = ((x == 128 && y == 64) || (x == 320 && y == 112));
+    const uint32_t diagnosticDestination = diagnosticPixel ? ReadVramUnlocked(fpsm, fbp, fbw, x, y) : 0u;
+    const uint32_t diagnosticDepth = diagnosticPixel ? ReadVramUnlocked(zpsm, zbp, fbw, x, y) : 0u;
+    auto capturePixel = [&](uint32_t pixel, bool accepted) {
+        // Opt-in provenance at two scene pixels, bounded to 8192 fragment outcomes.
+        // Coordinates are in GS framebuffer rows (224 rows for MKSM frame mode).
+        if ((x == 128 && y == 64) || (x == 320 && y == 112))
+        {
+            struct PixelCapture {
+                std::ofstream file;
+                unsigned count = 0;
+                bool afterFeedback = false;
+                long delayMs = 120000;
+                std::chrono::steady_clock::time_point start = std::chrono::steady_clock::now();
+                PixelCapture() {
+                    afterFeedback = std::getenv("PS2_INSPECTOR_PIXELS_AFTER_FEEDBACK") != nullptr;
+                    if (const char* delay = std::getenv("PS2_INSPECTOR_PIXELS_DELAY_MS")) {
+                        char* end = nullptr;
+                        const long value = std::strtol(delay, &end, 10);
+                        if (end != delay && *end == '\0' && value >= 0 && value <= 300000)
+                            delayMs = value;
+                    }
+                    if (const char* path = std::getenv("PS2_INSPECTOR_PIXELS"))
+                        if (*path) {
+                            file.open(path, std::ios::trunc);
+                            file << "write,elapsed_ms,x,y,primitive,fbp,psm,source,destination,result,fog,fog_r,fog_g,fog_b,fge,tme,tex,tpsm,tfx,tcc,cbp,cpsm,test,alpha,fbmsk,z,zbp,zpsm,abe,pabe,colclamp,fba,clamp,linear,tbw,tw,th,stored_z,zmask,write_depth,zpass\n";
+                        }
+                }
+            };
+            static PixelCapture capture;
+            if (capture.file.is_open() && capture.file && capture.count < 8192u) {
+                const auto elapsed = std::chrono::duration_cast<std::chrono::milliseconds>(
+                    std::chrono::steady_clock::now() - capture.start).count();
+                if (elapsed >= capture.delayMs && (!capture.afterFeedback || feedbackCapture().started)) {
+                    capture.file << capture.count++ << ',' << elapsed << ',' << x << ',' << y << ','
+                        << unsigned(state.prim.type) << ',' << ctx.frame.fbp << ',' << fpsm << ','
+                        << diagnosticSource << ',' << diagnosticDestination << ',' << pixel << ','
+                        << unsigned(fog) << ',' << unsigned(state.fogR) << ',' << unsigned(state.fogG) << ',' << unsigned(state.fogB) << ','
+                        << state.prim.fge << ',' << state.prim.tme << ',' << ctx.tex0.tbp0 << ',' << unsigned(ctx.tex0.psm) << ','
+                        << unsigned(ctx.tex0.tfx) << ',' << unsigned(ctx.tex0.tcc) << ',' << ctx.tex0.cbp << ',' << unsigned(ctx.tex0.cpsm) << ','
+                        << ctx.test << ',' << ctx.alpha << ',' << ctx.frame.fbmsk << ',' << static_cast<uint32_t>(z) << ','
+                        << ctx.zbuf.zbp << ',' << unsigned(ctx.zbuf.psm) << ',' << state.prim.abe << ',' << state.pabe << ','
+                        << state.colclamp << ',' << ctx.fba << ',' << ctx.clamp << ',' << state.linearFilter << ','
+                        << unsigned(ctx.tex0.tbw) << ',' << unsigned(ctx.tex0.tw) << ',' << unsigned(ctx.tex0.th) << ','
+                        << diagnosticDepth << ',' << ctx.zbuf.zmask << ','
+                        << (accepted && writeMask.writeDepth && !ctx.zbuf.zmask) << ',' << accepted << '\n';
+                    capture.file.flush();
+                }
+            }
+        }
+    };
+
     if (!zpass)
     {
+        capturePixel(diagnosticDestination, false);
         return;
     }
 
@@ -1047,50 +1100,11 @@ void GSCpuBackend::WritePixel(const GSDrawState &state, int x, int y, int z, uin
             pixel = Rgba8888ToRgba5551(pixel);
         }
 
-        // Opt-in provenance at two scene pixels, bounded to 1024 successful writes.
-        // Coordinates are in GS framebuffer rows (224 rows for MKSM frame mode).
-        if ((x == 128 && y == 64) || (x == 320 && y == 112))
-        {
-            struct PixelCapture {
-                std::ofstream file;
-                unsigned count = 0;
-                long delayMs = 120000;
-                std::chrono::steady_clock::time_point start = std::chrono::steady_clock::now();
-                PixelCapture() {
-                    if (const char* delay = std::getenv("PS2_INSPECTOR_PIXELS_DELAY_MS")) {
-                        char* end = nullptr;
-                        const long value = std::strtol(delay, &end, 10);
-                        if (end != delay && *end == '\0' && value >= 0 && value <= 300000)
-                            delayMs = value;
-                    }
-                    if (const char* path = std::getenv("PS2_INSPECTOR_PIXELS"))
-                        if (*path) {
-                            file.open(path, std::ios::trunc);
-                            file << "write,elapsed_ms,x,y,primitive,fbp,psm,source,destination,result,fog,fog_r,fog_g,fog_b,fge,tme,tex,tpsm,tfx,tcc,cbp,cpsm,test,alpha,fbmsk,z,zbp,zpsm,abe,pabe,colclamp,fba,clamp,linear,tbw,tw,th\n";
-                        }
-                }
-            };
-            static PixelCapture capture;
-            if (capture.file.is_open() && capture.file && capture.count < 1024u) {
-                const auto elapsed = std::chrono::duration_cast<std::chrono::milliseconds>(
-                    std::chrono::steady_clock::now() - capture.start).count();
-                if (elapsed >= capture.delayMs) {
-                    capture.file << capture.count++ << ',' << elapsed << ',' << x << ',' << y << ','
-                        << unsigned(state.prim.type) << ',' << ctx.frame.fbp << ',' << fpsm << ','
-                        << diagnosticSource << ',' << ReadVramUnlocked(fpsm, fbp, fbw, x, y) << ',' << pixel << ','
-                        << unsigned(fog) << ',' << unsigned(state.fogR) << ',' << unsigned(state.fogG) << ',' << unsigned(state.fogB) << ','
-                        << state.prim.fge << ',' << state.prim.tme << ',' << ctx.tex0.tbp0 << ',' << unsigned(ctx.tex0.psm) << ','
-                        << unsigned(ctx.tex0.tfx) << ',' << unsigned(ctx.tex0.tcc) << ',' << ctx.tex0.cbp << ',' << unsigned(ctx.tex0.cpsm) << ','
-                        << ctx.test << ',' << ctx.alpha << ',' << ctx.frame.fbmsk << ',' << static_cast<uint32_t>(z) << ','
-                        << ctx.zbuf.zbp << ',' << unsigned(ctx.zbuf.psm) << ',' << state.prim.abe << ',' << state.pabe << ','
-                        << state.colclamp << ',' << ctx.fba << ',' << ctx.clamp << ',' << state.linearFilter << ','
-                        << unsigned(ctx.tex0.tbw) << ',' << unsigned(ctx.tex0.tw) << ',' << unsigned(ctx.tex0.th) << '\n';
-                    capture.file.flush();
-                }
-            }
-        }
         WriteVramUnlocked(fpsm, fbp, fbw, x, y, pixel);
     }
+
+    if (diagnosticPixel)
+        capturePixel(ReadVramUnlocked(fpsm, fbp, fbw, x, y), true);
 
     if (writeMask.writeDepth && !ctx.zbuf.zmask)
     {

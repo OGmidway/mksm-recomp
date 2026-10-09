@@ -772,14 +772,32 @@ namespace ps2_stubs
 
     void sceGsPutDrawEnv(uint8_t *rdram, R5900Context *ctx, PS2Runtime *runtime)
     {
-        uint32_t envAddr = getRegU32(ctx, 4);
-        GsRegPairMem pairs[8]{};
-        if (!readGsRegPairs(rdram, envAddr, pairs, 8u))
+        // The SDK pointer addresses a GIF tag followed by NLOOP A+D records,
+        // including optional clear draws. Submit the complete packet using the
+        // retail GIF DMA path; treating the tag as a register drops the clears.
+        if (!runtime || !runtime->syncCoreSubsystems())
         {
             setReturnS32(ctx, -1);
             return;
         }
-        applyGsRegPairs(runtime, pairs, 8u);
+        auto &mem = runtime->memory();
+        mem.processPendingTransfers();
+        uint32_t spins = 0;
+        while ((mem.readIORegister(0x1000A000u) & 0x100u) != 0u)
+        {
+            if (++spins > 0x1000000u)
+            {
+                setReturnS32(ctx, -1);
+                return;
+            }
+        }
+        const uint32_t envAddr = getRegU32(ctx, 4);
+        const uint32_t qwc = static_cast<uint32_t>(mem.read64(envAddr) & 0x7fffu) + 1u;
+        const uint32_t madr = (envAddr & 0x0fffffffu) |
+            (((envAddr & 0x70000000u) == 0x70000000u) ? 0x80000000u : 0u);
+        mem.writeIORegister(0x1000A020u, qwc);
+        mem.writeIORegister(0x1000A010u, madr);
+        mem.writeIORegister(0x1000A000u, 0x101u);
         setReturnS32(ctx, 0);
     }
 
