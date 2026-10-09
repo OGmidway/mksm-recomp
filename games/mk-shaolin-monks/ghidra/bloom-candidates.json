@@ -1,33 +1,44 @@
-{
-  "prototype_sha256": "f0f0234bec88bd0d68912b92d86d75d7e6dc14a877bbb7b0c69843517a653f64",
-  "retail_sha256": "b1ed99d81b07969553ed2f9afaad4caed1bbeb637d53a369f4dafca8eedd2ab2",
-  "status": "candidates only; not imported into verified symbols",
-  "method": "Normalized 32-word prefix search followed by full-length normalized comparison using compare-prototype.py norm. Local map delta 0x1a8 agrees with retail function boundaries for these three candidates; not a universal offset. Other offsets matched interior instruction windows and are not function identities.",
-  "candidates": [
-    {
-      "name": "packet_anti_alias_or_blur",
-      "map_address": "0x209660",
-      "prototype_candidate": "0x2094b8",
-      "retail_candidate": "0x227cd0",
-      "size": 644,
-      "normalized_matching_words": 161
-    },
-    {
-      "name": "anti_alias_or_blur",
-      "map_address": "0x2098e8",
-      "prototype_candidate": "0x209740",
-      "retail_candidate": "0x227f58",
-      "size": 924,
-      "normalized_matching_words": 231
-    },
-    {
-      "name": "RegisterBloomCode",
-      "map_address": "0x209d58",
-      "prototype_candidate": "0x209bb0",
-      "retail_candidate": "0x2283b0",
-      "size": 172,
-      "normalized_matching_words": 43
-    }
-  ],
-  "unresolved": "Bloom(void), map 0x208e00, size0x85c: no matching normalized 32-word prefix for tested local deltas. Inspect neighboring retail 0x227468..0x227cd0 and call graph before naming."
+{
+  "prototype_sha256": "f0f0234bec88bd0d68912b92d86d75d7e6dc14a877bbb7b0c69843517a653f64",
+  "retail_sha256": "b1ed99d81b07969553ed2f9afaad4caed1bbeb637d53a369f4dafca8eedd2ab2",
+  "status": "candidates only; not imported into verified symbols",
+  "method": "Normalized 32-word prefix search followed by full-length normalized comparison using compare-prototype.py norm. Local map delta 0x1a8 agrees with retail function boundaries for these three candidates; not a universal offset. Other offsets matched interior instruction windows and are not function identities.",
+  "candidates": [
+    {
+      "name": "packet_anti_alias_or_blur",
+      "map_address": "0x209660",
+      "prototype_candidate": "0x2094b8",
+      "retail_candidate": "0x227cd0",
+      "size": 644,
+      "normalized_matching_words": 161
+    },
+    {
+      "name": "anti_alias_or_blur",
+      "map_address": "0x2098e8",
+      "prototype_candidate": "0x209740",
+      "retail_candidate": "0x227f58",
+      "size": 924,
+      "normalized_matching_words": 231
+    },
+    {
+      "name": "RegisterBloomCode",
+      "map_address": "0x209d58",
+      "prototype_candidate": "0x209bb0",
+      "retail_candidate": "0x2283b0",
+      "size": 172,
+      "normalized_matching_words": 43
+    }
+  ],
+  "unresolved": "Bloom(void), map 0x208e00, size0x85c: no matching normalized 32-word prefix for tested local deltas. Inspect neighboring retail 0x227468..0x227cd0 and call graph before naming.",
+  "retail_packet_investigation": {
+    "date": "2026-10-09",
+    "controller": "0x227560; bloom behavior inferred from call sequence, not yet a full prototype match",
+    "blend_builder": "0x278050: sets ALPHA_2 and TEXFLUSH; captured alpha constants agree",
+    "xyoffset_builder": "0x278520: emits XYOFFSET_2 using scale-specific origin and caller offsets",
+    "feedback_draw": "0x279f08 -> 0x276ca0 / 0x276380",
+    "final_composite": "0x27cf38 changes source/destination frame choice before same packet submission helpers",
+    "state_setup": "0x276f00 emits TEXFLUSH, ZBUF_2 (masked), TEST_2, SCISSOR_2, TEX1_2, COLCLAMP and CLAMP_2",
+    "debug_values": "0x65a5c0/0x65a5c4 are consistent with prototype gg_off3/gg_off4 layout; static references found writes only; not established as packet memory",
+    "limits": "Retail decompilation and live register observations; no speculative runtime rendering fix. Raw disassembly stays local."
+  }
 }

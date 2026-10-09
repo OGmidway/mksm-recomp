@@ -44,9 +44,19 @@ namespace
             std::ofstream out(prefix + suffix, std::ios::binary | std::ios::trunc);
             out.write(reinterpret_cast<const char*>(vram), std::min<uint32_t>(size, 4u * 1024u * 1024u));
         }
-        void finish(const uint8_t* vram, uint32_t size) {
+        void finish(const uint8_t* vram, uint32_t size, const char* reason,
+                    const GSPrimitiveBatch* next = nullptr, const GSTransferCommand* transfer = nullptr) {
             if (!started || done) return;
             snapshot(".end.bin", vram, size); draws.close(); done = true;
+            std::ofstream stop(prefix + ".stop.json", std::ios::trunc);
+            stop << "{\"reason\":\"" << reason << "\",\"draws\":" << count
+                 << ",\"initial_fbp\":" << target << ",\"flush\":" << flushSerial;
+            if (next) stop << ",\"next_primitive\":" << unsigned(next->state.prim.type)
+                           << ",\"next_fbp\":" << next->state.context.frame.fbp;
+            if (transfer) stop << ",\"direction\":" << unsigned(transfer->direction)
+                << ",\"sbp\":" << transfer->bitbltbuf.sbp << ",\"dbp\":" << transfer->bitbltbuf.dbp
+                << ",\"width\":" << transfer->trxreg.rrw << ",\"height\":" << transfer->trxreg.rrh;
+            stop << "}\n";
         }
         void record(const GSPrimitiveBatch& batch, const uint8_t* vram, uint32_t size) {
             if (prefix.empty() || done) return;
@@ -60,7 +70,7 @@ namespace
                 draws.open(prefix + ".csv", std::ios::trunc); draws.precision(9);
                 draws << "draw,flush,vertex,x,y,u,v,z,r,g,b,a,fog,fbp,fbw,ofx,ofy,sx0,sy0,sx1,sy1,tme,fst,abe,fge,pabe,fba,colclamp,test,alpha,fbmsk,zbp,zpsm,zmask,tex,tbw,tw,th,tfx,tcc,clamp,linear\n";
             }
-            if (!supported || c.frame.fbp != target || count >= 4096u) { finish(vram, size); return; }
+            if (!supported || count >= 4096u) { finish(vram, size, supported ? "limit" : "unsupported", &batch); return; }
             for (unsigned i = 0; i < batch.vertexCount; ++i) {
                 const auto& v = batch.vertices[i];
                 draws << count << ',' << flushSerial << ',' << i << ',' << v.x << ',' << v.y << ',' << v.u << ',' << v.v << ',' << v.z << ','
@@ -1525,8 +1535,8 @@ void GSCpuBackend::DrawLine(const GSPrimitiveBatch &batch)
 
 void GSCpuBackend::BeginTransfer(const GSTransferCommand &command)
 {
-    feedbackCapture().finish(m_vram, m_vramSize);
     std::lock_guard<std::mutex> lock(m_mutex);
+    feedbackCapture().finish(m_vram, m_vramSize, "transfer", nullptr, &command);
     m_transfer = command;
     m_transferState.x = command.trxpos.dsax;
     m_transferState.y = command.trxpos.dsay;

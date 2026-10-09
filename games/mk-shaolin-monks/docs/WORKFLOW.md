@@ -147,3 +147,13 @@ Before this pass, exact-white counts on framebuffer 0, 70 and scratch 140 were a
 The final live image remains heavily overexposed and geometrically incorrect; the original Goro's Lair sequence and actor control are unproven. Next: trace the post-bloom composite and framebuffer clearing across early scene frames, and investigate fractional XYOFFSET handling with a targeted raster reference. Distinguish intended bright-source bloom from erroneous accumulation before changing runtime behavior.
 
 Capture hashes: CSV b52d2184da9972eab665f2eb358825dcee5832e6542b2d11b4d90156c6c6e033; start 4e6ebdbde55857269ec03bc34cb5c20bd063ba9676bc5ca8362e00fe979f74a3; end 0bd7213436c85f6f05ec43f26f06a3095086f24523a22c2619e2c10dd378a877. Raw data remain local in the overwritten bounded capture.
+
+## 2026-10-09: Capture the final bloom composite
+
+Retail decompilation identifies the blend builder at 0x278050, XYOFFSET_2 builder at 0x278520, feedback helper at 0x279f08, packet setup at 0x276ca0/0x276f00, and final composite helper at 0x27cf38. Observed blending constants agree with the builders. Prototype gg_off3/gg_off4 layout is consistent with the watched 0x65a5c0/0x65a5c4 values (64 and 16); these are not proven packet headers. Call relationships and limits were added to ghidra/bloom-candidates.json.
+
+The previous capture ended on framebuffer change and therefore omitted final compositing. The C++ diagnostic now continues supported CT32 sprite batches across that change, stays capped at 4096 draws, and emits a small hash-bound stop record. Snapshot reads on BeginTransfer now occur under the backend mutex. Rendering behavior is otherwise unchanged. The same existing build was reused; FFmpeg remains enabled.
+
+Fresh run: session 8a9e8826e8c04553b173a9663074767c; runner 5e1aa6f51b312043a2de47e5130df99888b4a864439057fcfc70898595bbd110; 145 seconds, 413 fresh inspector samples, no reported runtime or XGKICK errors. Diagnostic intro skip was used; this does not validate the natural cinematic path or gameplay.
+
+Captured 1120 sprites, ending before a triangle-strip batch targeting framebuffer 0. Python coherent replay matches all 1048576 VRAM words after 1142016 writes. Final composite starts at draw 840 (scratch 140 -> framebuffer 0, fixed blend factor 32); draw 980 begins an untextured alpha-only pass. First-frame framebuffer-0 mean RGB changes from 5.513086 to 7.806410, with zero exact-white pixels before and after (six near-white afterward). Scratch 140 has 605 exact-white pixels at the end. The final 145-second image remains overexposed. The first composite does not itself explain later saturation; next trace frame clearing, depth writes and later compositing together. No speculative rendering fix is enabled.

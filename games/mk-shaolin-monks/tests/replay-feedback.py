@@ -83,6 +83,13 @@ def main():
     for row in csv.DictReader(data['.csv'].decode().splitlines()):
         row={k:float(v) if k in ('x','y','z') else int(v) for k,v in row.items()};grouped.setdefault(row['draw'],[]).append(row)
     assert 0<len(grouped)<=4096 and all(len(v)==2 for v in grouped.values())
+    stop=None
+    if '.stop.json' in capture['files']:
+        raw=(RUN/'feedback.stop.json').read_bytes()
+        assert hashlib.sha256(raw).hexdigest()==capture['files']['.stop.json'], 'stop metadata hash mismatch'
+        stop=json.loads(raw)
+        assert stop['draws']==len(grouped) and stop['reason'] in ('unsupported','limit','transfer')
+
     out,writes,seconds=replay(data['.start.bin'],list(grouped.values()),args.mode)
     expected=array.array('I');expected.frombytes(data['.end.bin'])
     initial=array.array('I');initial.frombytes(data['.start.bin'])
@@ -95,7 +102,7 @@ def main():
     surfaces={str(fbp):{'initial':surface_stats(initial,fbp),'native':surface_stats(expected,fbp),'replay':surface_stats(out,fbp)} for fbp in (0,70,140)}
 
     mismatches=sum(a!=b for a,b in zip(out,expected));first=next((i for i,(a,b) in enumerate(zip(out,expected)) if a!=b),None)
-    result={'session':report['session'],'runner_sha256':report['runner_sha256'],'mode':args.mode,'surfaces_640x224':surfaces,'draws':len(grouped),'flush_values':sorted({d[0]['flush'] for d in grouped.values()}),'pixel_writes':writes,'seconds':seconds,'mismatched_words':mismatches,'first_mismatch_word':first,'first_actual':None if first is None else hex(out[first]),'first_expected':None if first is None else hex(expected[first]),'white_words':sum((v&0xffffff)==0xffffff for v in out),'limitation':'Cache modes are controlled hypotheses, not a complete PS2 texture cache model.'}
+    result={'session':report['session'],'runner_sha256':report['runner_sha256'],'mode':args.mode,'capture_stop':stop,'surfaces_640x224':surfaces,'draws':len(grouped),'flush_values':sorted({d[0]['flush'] for d in grouped.values()}),'pixel_writes':writes,'seconds':seconds,'mismatched_words':mismatches,'first_mismatch_word':first,'first_actual':None if first is None else hex(out[first]),'first_expected':None if first is None else hex(expected[first]),'white_words':sum((v&0xffffff)==0xffffff for v in out),'limitation':'Cache modes are controlled hypotheses, not a complete PS2 texture cache model.'}
     path=GAME/'logs/feedback-replay-report.json';history=json.loads(path.read_text()) if path.exists() else {}
     if history.get('session')!=report['session']:history={'session':report['session'],'results':{}}
     history['results'][args.mode]=result;path.write_text(json.dumps(history,indent=2));print(json.dumps(result,indent=2))

@@ -14,7 +14,7 @@ def validate(row, session=None, pid=None, now=None):
     now = time.time()*1000 if now is None else now
     if not 0 <= now-captured <= 3000: raise ValueError('Stale or future CPU snapshot')
     if row['sequence'] < 1: raise ValueError('No CPU sample captured')
-    for name in ('cpu','threads','rpc','heap','watches'): 
+    for name in ('cpu','threads','rpc','heap','watches'):
         if name not in row: raise ValueError('Missing '+name)
     return row
 
@@ -210,7 +210,7 @@ def main():
     env.pop('PS2_INSPECTOR_FEEDBACK',None)
     env['PS2_INSPECTOR_FEEDBACK_DELAY_MS']=str(args.pixel_delay_ms)
     if args.capture_feedback:
-        for suffix in ('.csv','.start.bin','.end.bin'):(RUN/('feedback'+suffix)).unlink(missing_ok=True)
+        for suffix in ('.csv','.start.bin','.end.bin','.stop.json'):(RUN/('feedback'+suffix)).unlink(missing_ok=True)
         env['PS2_INSPECTOR_FEEDBACK']=str(RUN/'feedback')
     env.pop('PS2_INSPECTOR_PIXELS',None)
     env['PS2_INSPECTOR_PIXELS_DELAY_MS']=str(args.pixel_delay_ms)
@@ -349,7 +349,7 @@ def main():
         report['gif_capture']={'path':str(RUN/'gif.bin'),'session':token,
                                'sha256':hashlib.sha256((RUN/'gif.bin').read_bytes()).hexdigest()}
     if args.capture_feedback:
-        report['feedback_capture']={'session':token,'files':{suffix:hashlib.sha256((RUN/('feedback'+suffix)).read_bytes()).hexdigest() for suffix in ('.csv','.start.bin','.end.bin') if (RUN/('feedback'+suffix)).exists()}}
+        report['feedback_capture']={'session':token,'files':{suffix:hashlib.sha256((RUN/('feedback'+suffix)).read_bytes()).hexdigest() for suffix in ('.csv','.start.bin','.end.bin','.stop.json') if (RUN/('feedback'+suffix)).exists()}}
     if args.capture_pixels and (RUN/'pixels.csv').exists():
         report['pixel_capture']={'path':str(RUN/'pixels.csv'),'session':token,'delay_ms':args.pixel_delay_ms,
                                 'sha256':hashlib.sha256((RUN/'pixels.csv').read_bytes()).hexdigest()}
